@@ -1,4 +1,5 @@
-<img width="2525" height="1251" alt="image" src="https://github.com/user-attachments/assets/21ad0dbc-82ad-49c2-a2ca-7284b69df76d" /># Candidate Intake & Review Automation (n8n)
+<img width="1693" height="501" alt="image" src="https://github.com/user-attachments/assets/303253b3-ee42-4412-8a23-9cebf52bd714" />
+# Candidate Intake & Review Automation (n8n)
 
 This project is an automated candidate intake workflow built in n8n. It processes webhook submissions, stores candidate data, sends internal notifications, handles failures with retries, logs executions, and triggers external webhook events.
 
