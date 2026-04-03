@@ -49,8 +49,7 @@ This project is an automated candidate intake workflow built in n8n. It processe
 ---
 
 ## Webhook Input Example
-
-``json
+```json
 {
   "name": "Cayden Marty",
   "email": "cayden@example.com",
@@ -58,8 +57,12 @@ This project is an automated candidate intake workflow built in n8n. It processe
   "resume_link": "https://example.com/resume",
   "notes": "Test submission"
 }
+```
+
+---
 
 ## Outbound Webhook Payload
+```json
 {
   "run_id": "12345",
   "candidate_email": "cayden@example.com",
@@ -67,42 +70,58 @@ This project is an automated candidate intake workflow built in n8n. It processe
   "final_status": "NEEDS_REVIEW",
   "timestamp": "2026-04-03T12:00:00Z"
 }
+```
+
+---
 
 ## Google Sheets Structure
-  Name	
-  Email	Role 
-  Type	
-  Resume Link	
-  Notes	Status	
-  Run Id
+
+| Name | Email | Role Type | Resume Link | Notes | Status | Run ID |
+|------|-------|-----------|-------------|-------|--------|--------|
+
+---
 
 ## Run Log Sheet
-  Timestamp
-  Candidate Email
-  Actions
-  Result
-  Run Id
+
+| Timestamp | Candidate Email | Actions | Result | Run ID |
+|-----------|-----------------|---------|--------|--------|
+
+---
 
 ## Tech Stack
-  n8n (Docker)
-  Google Sheets API
-  Gmail API
-  Webhooks (Webhook.site)
+
+- n8n (Docker)
+- Google Sheets API
+- Gmail API
+- Webhooks (Webhook.site)
+
+---
 
 ## Key Design Decisions
-  Deduplication based on email to ensure rerunnable workflow
-  Status only moves to NEEDS_REVIEW after successful notification
-  Retry logic prevents transient failures from breaking flow
-  Logs ensure traceability of every execution
-  External webhook only fires after confirmed success
+
+- Deduplication based on email to ensure rerunnable workflow
+- Status only moves to `NEEDS_REVIEW` after successful notification
+- Retry logic prevents transient failures from breaking flow
+- Logs ensure traceability of every execution
+- External webhook only fires after confirmed success
+
+---
 
 ## Setup Notes
-  Enable Google Sheets API + Google Drive API
-  Connect Gmail credentials in n8n
-  Configure webhook node to use Respond to Webhook
-  Export/import workflow JSON to reuse
+
+1. Enable Google Sheets API + Google Drive API
+2. Connect Gmail credentials in n8n
+3. Configure webhook node to use **Respond to Webhook**
+4. Export/import workflow JSON to reuse
+
+---
 
 ## Files
 
-## Author 
-Cayden Marty
+> _Add workflow JSON and any supporting files here._
+
+---
+
+## Author
+
+**Cayden Marty**
