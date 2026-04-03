@@ -5,7 +5,7 @@ This project is an automated candidate intake workflow built in n8n. It processe
 
 ---
 
-## 🚀 Features
+## Features
 
 - Webhook-based candidate intake
 - Deduplication using email (no duplicate rows)
@@ -118,7 +118,8 @@ This project is an automated candidate intake workflow built in n8n. It processe
 
 ## Files
 
-> _Add workflow JSON and any supporting files here._
+- [`Candidate.Intake.Review.Automation.json`](./Candidate.Intake.Review.Automation.json) — n8n workflow export
+
 
 ---
 
