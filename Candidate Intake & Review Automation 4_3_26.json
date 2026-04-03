@@ -1,0 +1,863 @@
+{
+  "name": "Candidate Intake & Review Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "candidate-submit",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "2b946bba-8859-4354-bf0f-84cc5e7d0fee",
+      "name": "Webhook – Receive Candidate Submission",
+      "webhookId": "5c1f6041-ae5c-4283-b54f-22b93bfcdd42"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1F1benkVNMHZQXi2ZMZh8siyVRIHprD3i1fCUonNv-vY",
+          "mode": "list",
+          "cachedResultName": "Candidates",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1F1benkVNMHZQXi2ZMZh8siyVRIHprD3i1fCUonNv-vY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Candidatees",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1F1benkVNMHZQXi2ZMZh8siyVRIHprD3i1fCUonNv-vY/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json.body.name }}",
+            "Email": "={{ $json.body.email }}",
+            "Role Type": "={{ $json.body.role_type }}",
+            "Resume Link": "={{ $json.body.resume_link }}",
+            "Notes": "={{ $json.body.notes }}",
+            "Status": "NEW"
+          },
+          "matchingColumns": [
+            "Email"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Role Type",
+              "displayName": "Role Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Resume Link",
+              "displayName": "Resume Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Run Id",
+              "displayName": "Run Id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        192,
+        0
+      ],
+      "id": "5640c853-22e2-44d6-800d-05275734b487",
+      "name": "Upsert Candidate (Status = NEW)",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "84n79qHt8Jk6CpjV",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "cayden.marty@gmail.com",
+        "subject": "=New Candidate Submission!",
+        "message": "=<p><strong>New candidate submitted</strong></p>\n<p><strong>Name:</strong> {{ $('Webhook – Receive Candidate Submission').item.json.body.name }}</p>\n<p><strong>Email:</strong> {{ $('Webhook – Receive Candidate Submission').item.json.body.email }}</p>\n<p><strong>Role Type:</strong> {{ $('Webhook – Receive Candidate Submission').item.json.body.role_type }}</p>\n<p><strong>Resume Link:</strong> <a href=\"{{ $('Webhook – Receive Candidate Submission').item.json.body.resume_link }}\">View Resume</a></p>\n<p><strong>Notes:</strong> {{ $('Webhook – Receive Candidate Submission').item.json.body.notes }}</p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        384,
+        0
+      ],
+      "id": "2b19a54d-9fca-4853-8ef2-f99b37ee6fae",
+      "name": "Send Internal Notification",
+      "webhookId": "034d5961-ff55-41bd-9c5c-f82a80aa5718",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "nynMnJzkzD6zAuQY",
+          "name": "Gmail account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1F1benkVNMHZQXi2ZMZh8siyVRIHprD3i1fCUonNv-vY",
+          "mode": "list",
+          "cachedResultName": "Candidates",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1F1benkVNMHZQXi2ZMZh8siyVRIHprD3i1fCUonNv-vY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Candidatees",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1F1benkVNMHZQXi2ZMZh8siyVRIHprD3i1fCUonNv-vY/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $('Upsert Candidate (Status = NEW)').item.json.Name }}",
+            "Email": "={{ $('Upsert Candidate (Status = NEW)').item.json.Email }}",
+            "Role Type": "={{ $('Upsert Candidate (Status = NEW)').item.json['Role Type'] }}",
+            "Resume Link": "={{ $('Upsert Candidate (Status = NEW)').item.json['Resume Link'] }}",
+            "Notes": "={{ $('Upsert Candidate (Status = NEW)').item.json.Notes }}",
+            "Status": "=NEEDS_REVIEW"
+          },
+          "matchingColumns": [
+            "Email"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Role Type",
+              "displayName": "Role Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Resume Link",
+              "displayName": "Resume Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Run Id",
+              "displayName": "Run Id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        608,
+        -96
+      ],
+      "id": "843b57d0-848d-404e-b2cd-383beac65eb4",
+      "name": "Update Status → NEEDS_REVIEW",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "84n79qHt8Jk6CpjV",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1F1benkVNMHZQXi2ZMZh8siyVRIHprD3i1fCUonNv-vY",
+          "mode": "list",
+          "cachedResultName": "Candidates",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1F1benkVNMHZQXi2ZMZh8siyVRIHprD3i1fCUonNv-vY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Candidatees",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1F1benkVNMHZQXi2ZMZh8siyVRIHprD3i1fCUonNv-vY/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $('Upsert Candidate (Status = NEW)').item.json.Name }}",
+            "Email": "={{ $('Upsert Candidate (Status = NEW)').item.json.Email }}",
+            "Role Type": "={{ $('Upsert Candidate (Status = NEW)').item.json['Role Type'] }}",
+            "Resume Link": "={{ $('Upsert Candidate (Status = NEW)').item.json['Resume Link'] }}",
+            "Notes": "={{ $('Upsert Candidate (Status = NEW)').item.json.Notes }}",
+            "Status": "=EMAIL_FAILED"
+          },
+          "matchingColumns": [
+            "Email"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Role Type",
+              "displayName": "Role Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Resume Link",
+              "displayName": "Resume Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Run Id",
+              "displayName": "Run Id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        608,
+        64
+      ],
+      "id": "0c54cc68-11b5-4964-88a7-2d44d3d1ebb3",
+      "name": "Update Status → EMAIL_FAILED",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "84n79qHt8Jk6CpjV",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5a4d15fd-fb51-4505-b028-c54a3d726721",
+              "name": "Timestamp",
+              "value": "={{ new Date().toISOString() }}",
+              "type": "string"
+            },
+            {
+              "id": "f3733a4a-18a4-40fb-859f-bc5f08aa89fa",
+              "name": "Email",
+              "value": "={{ $('Webhook – Receive Candidate Submission').item.json.body.email }}",
+              "type": "string"
+            },
+            {
+              "id": "770db37c-da7d-41e0-a64a-a105108d51a4",
+              "name": "Actions",
+              "value": "Received → Stored → Notified",
+              "type": "string"
+            },
+            {
+              "id": "513d5fa8-75db-476e-a768-a09d6ca14b9a",
+              "name": "Result",
+              "value": "SUCCESS",
+              "type": "string"
+            },
+            {
+              "id": "293c31d0-0479-4342-ab33-e30e3a83eba7",
+              "name": "Run ID",
+              "value": "={{ $execution.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        992,
+        -96
+      ],
+      "id": "6699ff48-b166-4c5b-86cb-4817b2916827",
+      "name": "Build Run Log (SUCCESS)"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5a4d15fd-fb51-4505-b028-c54a3d726721",
+              "name": "Timestamp",
+              "value": "={{ new Date().toISOString() }}",
+              "type": "string"
+            },
+            {
+              "id": "f3733a4a-18a4-40fb-859f-bc5f08aa89fa",
+              "name": "Email",
+              "value": "={{ $('Webhook – Receive Candidate Submission').item.json.body.email }}",
+              "type": "string"
+            },
+            {
+              "id": "770db37c-da7d-41e0-a64a-a105108d51a4",
+              "name": "Actions",
+              "value": "Received → Stored → Notified",
+              "type": "string"
+            },
+            {
+              "id": "513d5fa8-75db-476e-a768-a09d6ca14b9a",
+              "name": "Result",
+              "value": "EMAIL_FAILED",
+              "type": "string"
+            },
+            {
+              "id": "293c31d0-0479-4342-ab33-e30e3a83eba7",
+              "name": "Run ID",
+              "value": "={{ $execution.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        992,
+        64
+      ],
+      "id": "3aa3571d-7909-4df8-a2ac-05c609740778",
+      "name": "Build Run Log (EMAIL_FAILED)"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1F1benkVNMHZQXi2ZMZh8siyVRIHprD3i1fCUonNv-vY",
+          "mode": "list",
+          "cachedResultName": "Candidates",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1F1benkVNMHZQXi2ZMZh8siyVRIHprD3i1fCUonNv-vY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2010788391,
+          "mode": "list",
+          "cachedResultName": "RunLog",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1F1benkVNMHZQXi2ZMZh8siyVRIHprD3i1fCUonNv-vY/edit#gid=2010788391"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Timestamp": "={{ $json.Timestamp }}",
+            "Email": "={{ $json.Email }}",
+            "Actions": "={{ $json.Actions }}",
+            "Result": "={{ $json.Result }}",
+            "Run ID": "={{ $json['Run ID'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Actions",
+              "displayName": "Actions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Result",
+              "displayName": "Result",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Run ID",
+              "displayName": "Run ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1184,
+        -96
+      ],
+      "id": "2fe591d8-1e71-472e-8033-9367446f4201",
+      "name": "Write Run Log (SUCCESS)",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "84n79qHt8Jk6CpjV",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1F1benkVNMHZQXi2ZMZh8siyVRIHprD3i1fCUonNv-vY",
+          "mode": "list",
+          "cachedResultName": "Candidates",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1F1benkVNMHZQXi2ZMZh8siyVRIHprD3i1fCUonNv-vY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2010788391,
+          "mode": "list",
+          "cachedResultName": "RunLog",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1F1benkVNMHZQXi2ZMZh8siyVRIHprD3i1fCUonNv-vY/edit#gid=2010788391"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Timestamp": "={{ $json.Timestamp }}",
+            "Email": "={{ $json.Email }}",
+            "Actions": "={{ $json.Actions }}",
+            "Result": "={{ $json.Result }}",
+            "Run ID": "={{ $json['Run ID'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Actions",
+              "displayName": "Actions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Result",
+              "displayName": "Result",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Run ID",
+              "displayName": "Run ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1184,
+        64
+      ],
+      "id": "21039068-8dfb-4b25-ae6d-1bf9ba5cce60",
+      "name": "Write Run Log (EMAIL_FAILED)",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "84n79qHt8Jk6CpjV",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"run_id\": \"{{ $execution.id }}\",\n  \"final_status\": \"NEEDS_REVIEW\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1360,
+        -96
+      ],
+      "id": "e94d70bc-9e03-443f-bab3-9283853f901c",
+      "name": "Respond (NEEDS_REVIEW)"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"run_id\": \"{{ $execution.id }}\",\n  \"final_status\": \"EMAIL_FAILED\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1360,
+        64
+      ],
+      "id": "bef5c50b-d9ab-48ed-8aa0-44d6b56eefbe",
+      "name": "Respond (EMAIL_FAILED)"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://webhook.site/89cf584f-7e4f-46ab-b8f8-ea4ef6da4888",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"run_id\": \"{{$execution.id}}\",\n  \"candidate_email\": \"{{$('Webhook – Receive Candidate Submission').item.json.body.email}}\",\n  \"role_type\": \"{{$('Webhook – Receive Candidate Submission').item.json.body.role_type}}\",\n  \"final_status\": \"NEEDS_REVIEW\",\n  \"timestamp\": \"{{$now}}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        816,
+        -96
+      ],
+      "id": "cf58c65a-63a7-43f0-bd95-fc272efd2e8f",
+      "name": "HTTP POST External Event"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook – Receive Candidate Submission": {
+      "main": [
+        [
+          {
+            "node": "Upsert Candidate (Status = NEW)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upsert Candidate (Status = NEW)": {
+      "main": [
+        [
+          {
+            "node": "Send Internal Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Internal Notification": {
+      "main": [
+        [
+          {
+            "node": "Update Status → NEEDS_REVIEW",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update Status → EMAIL_FAILED",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Status → NEEDS_REVIEW": {
+      "main": [
+        [
+          {
+            "node": "HTTP POST External Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Status → EMAIL_FAILED": {
+      "main": [
+        [
+          {
+            "node": "Build Run Log (EMAIL_FAILED)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Run Log (SUCCESS)": {
+      "main": [
+        [
+          {
+            "node": "Write Run Log (SUCCESS)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Run Log (EMAIL_FAILED)": {
+      "main": [
+        [
+          {
+            "node": "Write Run Log (EMAIL_FAILED)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Run Log (SUCCESS)": {
+      "main": [
+        [
+          {
+            "node": "Respond (NEEDS_REVIEW)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Run Log (EMAIL_FAILED)": {
+      "main": [
+        [
+          {
+            "node": "Respond (EMAIL_FAILED)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP POST External Event": {
+      "main": [
+        [
+          {
+            "node": "Build Run Log (SUCCESS)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9b70a939-a639-4e11-b118-8a228cd955ab",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "00aa57d6404e0131a3a59cac2c89775dc670ae14d0d686983b1b061f36205382"
+  },
+  "id": "GVj9a666HKkcLGlz",
+  "tags": []
+}
